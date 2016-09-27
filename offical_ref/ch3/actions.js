@@ -35,7 +35,7 @@ const receivePosts = (subreddit, json) => {
   };
 };
 
-export const fetchPosts = (subreddit) => {
+const fetchPosts = (subreddit) => {
     return (dispatch) => {
         dispatch(requestPosts(subreddit));
         return fetch(`http://www.reddit.com/r/${subreddit}.json`)
@@ -43,3 +43,22 @@ export const fetchPosts = (subreddit) => {
         .then(json => dispatch(receivePosts(subreddit, json)));
     }
 };
+
+const needFetchPosts = (state, subreddit) => {
+  let posts = state.postsBySubreddit[subreddit];
+  if (!posts) {
+    return true;
+  } else if (posts.isFetching) {
+    return false;
+  } else {
+    return !posts.didInvalidate;
+  }
+};
+
+export const fetchPostsIfNeeded = (subreddit) => {
+  return (dispatch, getState) => {
+    if (needFetchPosts(getState(), subreddit)) {
+      return dispatch(fetchPosts(subreddit));
+    }
+  }
+}

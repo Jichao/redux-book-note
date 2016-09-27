@@ -14,12 +14,11 @@ const posts = (posts = {
         });
       }
       case RECEIVE_POSTS: {
-        console.log('receive_posts');
         let keke =  Object.assign({}, posts, {
           isFetching: false,
-          items: action.posts
+          items: action.posts,
+          lastUpdated: action.receiveAt
         });
-        console.log(keke);
         return keke;
       }
       case INVALIDATE_SUBREDDIT: {
@@ -33,7 +32,7 @@ const posts = (posts = {
     }
   };
 
-  const subreddit = (state = 'hackintosh', action) => {
+  const selectedSubreddit = (state = 'hackintosh', action) => {
     if (action.type == SET_SUBREDDIT) {
       return action.subreddit;
     }
@@ -41,7 +40,6 @@ const posts = (posts = {
   };
 
   const postsBySubreddit = (state = {}, action) => {
-    console.log('postsBySubreddit reducer action type : ' + action.type);
     switch (action.type) {
       case REQUEST_POSTS:
       case RECEIVE_POSTS:
@@ -55,6 +53,6 @@ const posts = (posts = {
   };
 
   export default combineReducers({
-    subreddit,
+    selectedSubreddit,
     postsBySubreddit
   });
